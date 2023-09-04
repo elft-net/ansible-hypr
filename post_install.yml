@@ -1,0 +1,261 @@
+- hosts: localhost
+  tasks:
+  # dnf firmware
+  - name: Install firmware
+    become: yes
+    dnf:
+      name:
+        - iwlax2xx-firmware
+        - alsa-sof-firmware
+        - akmod-nvidia
+  # dnf module 
+  - name: Install Packages
+    become: yes
+    dnf:
+      name:
+        - gpm
+        - git
+        - gvfs
+        - tig
+        - zsh
+        - zsh-autosuggestions
+        - zsh-syntax-highlighting
+        - gcc-c++
+        - tldr
+        - glances
+        - ncdu
+        - pass
+        - pass-otp
+        - zbar
+        - acpi
+        - lm_sensors
+        - lxpolkit
+        - light
+        - yarnpkg
+        - neovim
+        - firefox
+        - thunderbird
+        - copyq
+        - meld
+        - foot
+        - kitty
+        - podman
+        - podman-docker
+        - docker-compose
+        - python3
+        - python3-pip
+        - python3-neovim
+        - copyq
+        - ethtool
+        - p7zip
+        - p7zip-plugins
+        - vifm
+        - pcmanfm
+      state: present
+  - name: Adding features
+    become: yes
+    dnf:
+      name:
+        - wget
+        - tmux
+        - lshw
+        - btop
+        - fuse-sshfs
+        - fuse-btfs
+        - fuse-zip
+        - curlftpfs
+        - archivemount
+        - s3fs-fuse
+        - zfs-fuse
+        - gvfs-fuse
+        - btrfs-fuse
+        - rclone
+        - qutebrowser
+        - newsboat
+        - remmina
+        - xarchiver
+        - xournal
+        - sxiv
+        - zathura
+        - zathura-pdf-poppler
+        - zathura-ps
+        - ethtool
+        - calcurse
+        - entr
+        - task-spooler
+        - perl
+        - putty
+        - groff
+        - groff-perl
+        - perl-Archive-Extract
+        - fzf
+        - speedtest-cli
+        - ripgrep
+        - httpd-tools
+        - keepassxc
+        - sqlite
+        - fd-find
+        - transmission
+        - transmission-cli
+        - bind-utils
+        - nmap
+        - nmap-ncat
+        - wireshark-cli
+      state: present
+  - name: Importing gpg keys for rpmfusion (free)
+    become: yes
+    rpm_key:
+      key: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-2020
+      state: present
+  - name: Importing gpg keys for rpmfusion (nonfree)
+    become: yes
+    rpm_key:
+      key: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020
+      state: present
+  - name: Importing gpg keys for onlyoffice (Third party)
+    become: yes
+    rpm_key:
+      key: https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
+      state: absent
+  - name: Adding Third Party Repositories
+    become: yes
+    dnf:
+      name:
+        - 'https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ansible_distribution_major_version}}.noarch.rpm'
+        - 'https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ansible_distribution_major_version}}.noarch.rpm'
+        # - 'https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors.x86_64.rpm'
+      state: present
+    when: ansible_distribution == 'Fedora'
+  - name: Adding Sound and Video
+    become: yes
+    dnf:
+      name:
+        - pipewire
+        - wireplumber
+        - mpv
+        - network-manager-applet
+        - NetworkManager-wifi
+        - NetworkManager-bluetooth
+        - NetworkManager-wwan
+        - pavucontrol
+        - wdisplays
+        # - onlyoffice-desktopeditors
+      state: present
+  # Wayland
+  - name: Adding Wayland
+    become: yes
+    dnf:
+      name:
+        - egl-wayland
+  # Hyprland copr repository
+  - name: Copr repo for hyprland owned by solopasha
+    become: yes
+    community.general.copr:
+      name: solopasha/hyprland
+  - name: Install Hyprland
+    become: yes
+    dnf:
+      name:
+        - hyprland
+        # - hyprland-nvidia
+        # - akmod-nvidia
+        - hyprshot
+        - waybar-hyprland
+        - xdg-desktop-portal-hyprland
+        - bemenu
+        - swaybg
+        - swayidle
+        - swaylock
+        - swappy
+  # Install Python pip modules
+  - name: Ansible Python pip modules
+    pip:
+      name:
+        - adblock
+        - openai
+        - tldextract
+  # Notifications and Missing fonts
+  - name: Glyphs and Icons
+    become: yes
+    dnf:
+      name:
+        - mako
+        - google-noto-emoji-color-fonts
+        # - glyphicons-halflings-fonts
+  # Nvidia kernel => Needs to be signed !!
+  - name: Auto signing Nvidia
+    become: yes
+    dnf:
+      name:
+        - kmodtool
+        - akmods
+        - mokutil
+        - openssl
+        # - akmod-nvidia
+      state: present
+  # Install brave rpm from a remote repo
+  - name: Add Brave repo
+    become: yes
+    yum_repository:
+      name: Brave
+      description: Brave YUM repo
+      baseurl: https://brave-browser-rpm-release.s3.brave.com/x86_64/
+      gpgkey: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+  - name: Install Brave
+    become: yes
+    dnf:
+      name: brave-browser
+      state: latest
+  # Add thunderbird, keepassxc
+  - name: Install Thunderbird
+    become: yes
+    dnf:
+      name:
+        - thunderbird
+        - keepassxc
+        - lxappearance
+        - qt6ct
+      state: present
+  # lazygit copr repository
+  - name: Copr repo for lazygit owned by atim
+    become: yes
+    community.general.copr:
+      name: atim/lazygit
+  - name: Install lazygit
+    become: yes
+    dnf:
+      name:
+        - lazygit
+  # Install Text processing tools and printers
+  - name: Install Text processing tools
+    become: yes
+    dnf:
+      name:
+        - pandoc
+        - R-core
+        - R-rmarkdown
+        - texlive-xetex
+        - texlive-unicode-math
+        # Too much stuff, getting all
+        - texlive
+        - cups
+        - system-config-printer
+      state: present
+  # Added Brave Repo and Key to keychain Manually => for convinience sake
+  # Got hurried, chickened out!!!
+    # - name: Install protonmail-brdge
+    #   become: yes
+    #   dnf:
+    #     name: protonmail-bridge
+    #     state: latest
+  # Command module
+  # - name: Enable Flathub repository
+  #   become: yes
+  #   command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  # - name: Install Teams
+  #   become: yes
+  #   command: flatpak install --assumeyes flathub com.microsoft.Teams
+  # - name: Install Slack
+  #   become: yes
+  #   command: flatpak install --assumeyes flathub com.slack.Slack
+
