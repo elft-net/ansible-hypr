@@ -28,6 +28,8 @@
         - pass-otp
         - zbar
         - acpi
+        - tlp-rdw
+        - powertop
         - lm_sensors
         - lxpolkit
         - light
@@ -37,6 +39,8 @@
         - thunderbird
         - copyq
         - meld
+        - diffpdf
+        - diff-pdf
         - foot
         - kitty
         - podman
@@ -51,12 +55,14 @@
         - p7zip-plugins
         - vifm
         - pcmanfm
+        - distrobox
       state: present
   - name: Adding features
     become: yes
     dnf:
       name:
         - wget
+        - httpie
         - tmux
         - lshw
         - btop
@@ -101,6 +107,19 @@
         - nmap
         - nmap-ncat
         - wireshark-cli
+        - awscli2
+        - v4l2loopback
+        - v4l-utils
+        - gphoto2
+        - gvfs-afc
+        - gvfs-afp
+        - gvfs-archive
+        - gvfs-fuse
+        - gvfs-goa
+        - gvfs-gphoto2
+        - gvfs-mtp
+        - gvfs-nfs
+        - gvfs-smb
       state: present
   - name: Importing gpg keys for rpmfusion (free)
     become: yes
@@ -141,12 +160,12 @@
         - wdisplays
         # - onlyoffice-desktopeditors
       state: present
-  # Wayland
-  - name: Adding Wayland
-    become: yes
-    dnf:
-      name:
-        - egl-wayland
+  # # Wayland
+  # - name: Adding Wayland
+  #   become: yes
+  #   dnf:
+  #     name:
+  #       - egl-wayland
   # Hyprland copr repository
   - name: Copr repo for hyprland owned by solopasha
     become: yes
@@ -160,7 +179,7 @@
         # - hyprland-nvidia
         # - akmod-nvidia
         - hyprshot
-        - waybar-hyprland
+        - waybar
         - xdg-desktop-portal-hyprland
         - bemenu
         - swaybg
@@ -174,6 +193,7 @@
         - adblock
         - openai
         - tldextract
+        - xdg-base-dirs
   # Notifications and Missing fonts
   - name: Glyphs and Icons
     become: yes
@@ -214,18 +234,19 @@
         - thunderbird
         - keepassxc
         - lxappearance
+        - nwg-look
         - qt6ct
       state: present
   # lazygit copr repository
-  - name: Copr repo for lazygit owned by atim
-    become: yes
-    community.general.copr:
-      name: atim/lazygit
-  - name: Install lazygit
-    become: yes
-    dnf:
-      name:
-        - lazygit
+  # - name: Copr repo for lazygit owned by atim
+  #   become: yes
+  #   community.general.copr:
+  #     name: atim/lazygit
+  # - name: Install lazygit
+  #   become: yes
+  #   dnf:
+  #     name:
+  #       - lazygit
   # Install Text processing tools and printers
   - name: Install Text processing tools
     become: yes
